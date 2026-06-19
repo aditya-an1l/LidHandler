@@ -2,6 +2,8 @@
   <img src="https://raw.githubusercontent.com/aditya-an1l/LidHandler/main/media/logo.jpeg" width="200" height="200" alt="LidHandler Logo">
 </div>
 
+> **⚠️ Under Active Maintenance** — This project is undergoing heavy restructuring. Install scripts and packages may be broken or incomplete. Do not use in production until this notice is removed.
+
 <div align="center">
   <p>
     <a href="https://github.com/aditya-an1l/LidHandler/releases/latest">
