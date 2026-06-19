@@ -1,10 +1,10 @@
-# Maintainer: Your Name <your@email.com>
+# Maintainer: Aditya Anil <aditya.anil.productions@gmail.com>
 pkgname=lidhandler
 pkgver=1.0.0
 pkgrel=1
 pkgdesc="Toggle laptop lid switch suspend behavior via systemd-logind"
 arch=('any')
-url="https://github.com/yourusername/lidhandler"
+url="https://github.com/aditya-an1l/LidHandler"
 license=('MIT')
 depends=('systemd')
 source=("$pkgname-$pkgver.tar.gz")

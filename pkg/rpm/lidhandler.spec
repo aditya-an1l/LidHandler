@@ -4,7 +4,7 @@ Release:        1%{?dist}
 Summary:        Toggle laptop lid switch suspend behavior via systemd-logind
 
 License:        MIT
-URL:            https://github.com/yourusername/lidhandler
+URL:            https://github.com/aditya-an1l/LidHandler
 Source0:        %{name}-%{version}.tar.gz
 
 BuildArch:      noarch
