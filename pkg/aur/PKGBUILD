@@ -7,11 +7,14 @@ arch=('any')
 url="https://github.com/aditya-an1l/LidHandler"
 license=('MIT')
 depends=('systemd')
-source=("$pkgname-$pkgver.tar.gz")
+source=("$url/archive/v$pkgver.tar.gz")
 sha256sums=('SKIP')
 
+# GitHub archives extract to RepoName-Tag
+_repodir="LidHandler-$pkgver"
+
 package() {
-  install -Dm755 "$srcdir/$pkgname-$pkgver/src/lidhandler" "$pkgdir/usr/bin/lidhandler"
-  install -Dm644 "$srcdir/$pkgname-$pkgver/config/lidhandler.conf" "$pkgdir/etc/systemd/logind.conf.d/10-lidhandler.conf"
-  install -Dm644 "$srcdir/$pkgname-$pkgver/docs/lidhandler.1" "$pkgdir/usr/share/man/man1/lidhandler.1"
+  install -Dm755 "$srcdir/$_repodir/src/lidhandler" "$pkgdir/usr/bin/lidhandler"
+  install -Dm644 "$srcdir/$_repodir/config/lidhandler.conf" "$pkgdir/etc/systemd/logind.conf.d/10-lidhandler.conf"
+  install -Dm644 "$srcdir/$_repodir/docs/lidhandler.1" "$pkgdir/usr/share/man/man1/lidhandler.1"
 }

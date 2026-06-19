@@ -3,4 +3,7 @@ CONTEXT.json
 TODO.md
 update.md
 log.md
-docs/
+docs/architecture/
+docs/constraints/
+docs/features/
+docs/Handbook.md

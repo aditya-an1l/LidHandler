@@ -1,0 +1,96 @@
+.TH LIDHANDLER 1 "2026-06-17" "LidHandler 1.1.0" "User Commands"
+.SH NAME
+lidhandler \- toggle laptop lid switch suspend behavior
+.SH SYNOPSIS
+.B lidhandler
+.RI [ COMMAND ]
+.SH DESCRIPTION
+.B LidHandler
+manages laptop lid switch behavior using systemd-logind drop-in
+configuration files. Prevent suspend-on-lid-close without modifying the
+base logind.conf.
+.SH COMMANDS
+.TP
+.B enable
+Prevent suspend on lid close. Creates a drop-in file at
+.I /etc/systemd/logind.conf.d/10-lidhandler.conf
+with HandleLidSwitch=ignore.
+.TP
+.B disable
+Restore default suspend on lid close. Removes the drop-in file.
+.TP
+.B status
+Show current lid switch behavior (ignore or suspend).
+.TP
+.B toggle
+Toggle between enable and disable. This is the default when no command is given.
+.SH DAEMON MODE
+Daemon mode provides temporary lid switch inhibition without persistent
+configuration changes. Uses
+.BR systemd-inhibit (1)
+to hold an inhibitor lock.
+.TP
+.B lidhandler daemon
+Start daemon in foreground. Press Ctrl-C to stop.
+.TP
+.B lidhandler daemon \-d
+Start daemon in background. Use
+.B lidhandler daemon stop
+to stop it.
+.TP
+.B lidhandler daemon stop
+Stop the background daemon.
+.TP
+.B lidhandler daemon status
+Check if the daemon is running.
+.SH FILES
+.TP
+.I /etc/systemd/logind.conf.d/10-lidhandler.conf
+Drop-in configuration file created by
+.B lidhandler enable.
+.TP
+.I /run/lidhandler-daemon.pid
+PID file for background daemon.
+.SH EXAMPLES
+.PP
+Enable lid-ignored mode (persistent):
+.PP
+.RS 4
+sudo lidhandler enable
+.RE
+.PP
+Start daemon in foreground (temporary):
+.PP
+.RS 4
+sudo lidhandler daemon
+.RE
+.PP
+Start daemon in background:
+.PP
+.RS 4
+sudo lidhandler daemon -d
+.RE
+.PP
+Stop background daemon:
+.PP
+.RS 4
+sudo lidhandler daemon stop
+.RE
+.PP
+Check daemon status:
+.PP
+.RS 4
+sudo lidhandler daemon status
+.RE
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+Error (not root, invalid command, or operation failed).
+.SH SEE ALSO
+.BR logind.conf (5),
+.BR systemd-inhibit (1)
+.SH AUTHORS
+LidHandler Contributors.
