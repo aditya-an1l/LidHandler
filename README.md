@@ -13,7 +13,7 @@
       <img alt="Last commit" src="https://img.shields.io/github/last-commit/aditya-an1l/LidHandler?style=for-the-badge&logo=git&color=38bdf8&logoColor=FFFFFF&labelColor=0f172a"/>
     </a>
     <a href="https://github.com/aditya-an1l/LidHandler/blob/main/LICENSE">
-      <img alt="License" src="https://img.shields.io/github/license/aditya-an1l/LidHandler?style=for-the-badge&color=10b981&logoColor=FFFFFF&labelColor=0f172a" />
+      <img alt="License" src="https://img.shields.io/github/license/aditya-an1l/LidHandler?style=for-the-badge&color=10b981&logoColor=FFFFFF&labelColor=0f172a"  />
     </a>
     <a href="https://github.com/aditya-an1l/LidHandler/stargazers">
       <img alt="Stars" src="https://img.shields.io/github/stars/aditya-an1l/LidHandler?style=for-the-badge&logo=starship&color=38bdf8&logoColor=FFFFFF&labelColor=0f172a" />
