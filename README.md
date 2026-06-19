@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="https://raw.githubusercontent.com/aditya-an1l/LidHandler/main/media/logo.svg" width="200" height="200" alt="LidHandler Logo">
+  <img src="https://raw.githubusercontent.com/aditya-an1l/LidHandler/main/media/logo.jpeg" width="200" height="200" alt="LidHandler Logo">
 </div>
 
 <div align="center">
