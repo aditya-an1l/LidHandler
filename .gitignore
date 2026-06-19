@@ -7,3 +7,10 @@ docs/architecture/
 docs/constraints/
 docs/features/
 docs/Handbook.md
+# Build artifacts
+*.pkg.tar.zst
+*.deb
+*.rpm
+pkg/rpm/SOURCES/
+pkg/aur/src/
+pkg/aur/pkg/
