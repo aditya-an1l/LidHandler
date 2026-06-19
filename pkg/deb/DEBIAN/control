@@ -1,0 +1,11 @@
+Package: lidhandler
+Version: 1.0.0
+Section: utils
+Priority: optional
+Architecture: all
+Depends: systemd
+Maintainer: Your Name <your@email.com>
+Description: Toggle laptop lid switch suspend behavior via systemd-logind
+ LidHandler manages laptop lid switch behavior using systemd-logind drop-in
+ configuration files. Prevent suspend-on-lid-close without modifying the
+ base logind.conf. Supports enable, disable, status, and toggle commands.

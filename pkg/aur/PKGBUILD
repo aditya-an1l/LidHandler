@@ -1,0 +1,17 @@
+# Maintainer: Your Name <your@email.com>
+pkgname=lidhandler
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Toggle laptop lid switch suspend behavior via systemd-logind"
+arch=('any')
+url="https://github.com/yourusername/lidhandler"
+license=('MIT')
+depends=('systemd')
+source=("$pkgname-$pkgver.tar.gz")
+sha256sums=('SKIP')
+
+package() {
+    install -Dm755 "$srcdir/$pkgname-$pkgver/src/lidhandler" "$pkgdir/usr/bin/lidhandler"
+    install -Dm644 "$srcdir/$pkgname-$pkgver/config/lidhandler.conf" "$pkgdir/etc/systemd/logind.conf.d/10-lidhandler.conf"
+    install -Dm644 "$srcdir/$pkgname-$pkgver/docs/lidhandler.1" "$pkgdir/usr/share/man/man1/lidhandler.1"
+}

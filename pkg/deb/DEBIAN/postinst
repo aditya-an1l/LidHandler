@@ -1,0 +1,10 @@
+#!/bin/sh
+set -e
+# Enable lidhandler drop-in by default on install
+mkdir -p /etc/systemd/logind.conf.d
+cat > /etc/systemd/logind.conf.d/10-lidhandler.conf <<'EOF'
+[Login]
+HandleLidSwitch=ignore
+EOF
+systemctl kill -s HUP systemd-logind 2>/dev/null || true
+echo "LidHandler: Lid close will now be IGNORED (no suspend)"

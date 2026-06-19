@@ -1,0 +1,273 @@
+#!/bin/sh
+# LidHandler — Toggle laptop lid switch behavior via systemd-logind drop-in
+# Usage: lidhandler [enable|disable|status|toggle|daemon]
+
+set -e
+
+# Colors
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+BLUE='\033[0;34m'
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
+BOLD='\033[1m'
+DIM='\033[2m'
+RESET='\033[0m'
+
+VERSION="1.1.0"
+
+# ASCII Art Logo
+show_logo() {
+  echo ""
+  printf "${CYAN}${BOLD}"
+  cat <<'LOGO'
+    #     ### ####     #   #  ###  #   # ####  #     ##### ####  
+    #      #  #   #    #   # #   # ##  # #   # #     #     #   # 
+    #      #  #   #    ##### ##### # # # #   # #     ####  ####  
+    #      #  #   #    #   # #   # #  ## #   # #     #     #  #  
+    ##### ### ####     #   # #   # #   # ####  ##### ##### #   # 
+LOGO
+  printf "${RESET}"
+  printf "${DIM}  v${VERSION} — Lid switch manager for systemd${RESET}\n"
+  echo ""
+}
+
+DROPIN_DIR="${LIDHANDLER_DROPIN_DIR:-/etc/systemd/logind.conf.d}"
+DROPIN_FILE="${LIDHANDLER_DROPIN_FILE:-${DROPIN_DIR}/10-lidhandler.conf}"
+CONFIG_PATH="${LIDHANDLER_CONFIG:-/etc/systemd/logind.conf}"
+PID_FILE="${LIDHANDLER_PID:-/run/lidhandler-daemon.pid}"
+
+# Reload systemd-logind to apply config changes
+reload_logind() {
+  if command -v systemctl >/dev/null 2>&1; then
+    systemctl kill -s HUP systemd-logind 2>/dev/null || {
+      echo "Warning: Could not signal systemd-logind (may not be running)"
+    }
+  else
+    echo "Warning: systemctl not found — changes take effect on next logind restart"
+  fi
+}
+
+# Require root for mutating operations
+require_root() {
+  if [ "$(id -u)" -ne 0 ]; then
+    echo "Error: This operation requires root (use sudo)" >&2
+    exit 1
+  fi
+}
+
+# Detect effective HandleLidSwitch (drop-in overrides base)
+get_status() {
+  if [ -f "$DROPIN_FILE" ] && grep -q "HandleLidSwitch=" "$DROPIN_FILE" 2>/dev/null; then
+    sed -n 's/^HandleLidSwitch=//p' "$DROPIN_FILE" | head -1
+  elif [ -f "$CONFIG_PATH" ] && grep -q "HandleLidSwitch=" "$CONFIG_PATH" 2>/dev/null; then
+    sed -n 's/^#*HandleLidSwitch=//p' "$CONFIG_PATH" | head -1
+  else
+    echo "suspend"
+  fi
+}
+
+enable_ignore() {
+  require_root
+  # Create drop-in directory if it doesn't exist
+  if [ ! -d "$DROPIN_DIR" ]; then
+    echo "Creating $DROPIN_DIR..."
+    mkdir -p "$DROPIN_DIR" || {
+      echo "Error: Failed to create $DROPIN_DIR" >&2
+      echo "Check permissions or if systemd is installed." >&2
+      exit 1
+    }
+  fi
+
+  cat >"$DROPIN_FILE" <<'EOF'
+[Login]
+HandleLidSwitch=ignore
+EOF
+
+  reload_logind
+  echo "LidHandler: Lid close will now be IGNORED (no suspend)"
+}
+
+disable_ignore() {
+  require_root
+  if [ -f "$DROPIN_FILE" ]; then
+    rm -f "$DROPIN_FILE"
+  fi
+
+  reload_logind
+  echo "LidHandler: Lid close will now SUSPEND (default behavior)"
+}
+
+show_status() {
+  STATUS=$(get_status)
+  echo "Current HandleLidSwitch: ${STATUS}"
+  if [ "$STATUS" = "ignore" ]; then
+    echo "  Lid close: IGNORED (no suspend)"
+  else
+    echo "  Lid close: SUSPEND"
+  fi
+}
+
+toggle_ignore() {
+  STATUS=$(get_status)
+  if [ "$STATUS" = "ignore" ]; then
+    disable_ignore
+  else
+    enable_ignore
+  fi
+}
+
+# Daemon lifecycle: read PID from file, validate, clean stale
+# Returns PID on stdout if running, empty if not
+daemon_pid() {
+  if [ ! -f "$PID_FILE" ]; then
+    return 1
+  fi
+  local pid
+  pid=$(cat "$PID_FILE" 2>/dev/null)
+  if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
+    echo "$pid"
+    return 0
+  fi
+  # Stale PID file
+  rm -f "$PID_FILE"
+  return 1
+}
+
+# Check if daemon is running
+daemon_is_running() {
+  daemon_pid >/dev/null 2>&1
+}
+
+# Start daemon: hold a systemd-inhibit lock in background
+daemon_start() {
+  require_root
+  if pid=$(daemon_pid); then
+    echo "LidHandler: Daemon already running (PID $pid)"
+    return 0
+  fi
+
+  # Check if systemd-inhibit is available
+  if ! command -v systemd-inhibit >/dev/null 2>&1; then
+    echo "Error: systemd-inhibit not found" >&2
+    echo "Daemon mode requires systemd. Use 'lidhandler enable' for persistent mode." >&2
+    exit 1
+  fi
+
+  # Start systemd-inhibit in background
+  systemd-inhibit \
+    --what=handle-lid-switch \
+    --who="LidHandler" \
+    --why="Daemon mode: lid switch inhibited" \
+    --mode=block \
+    sleep infinity &
+  DAEMON_PID=$!
+
+  # Wait briefly for the process to start
+  sleep 0.5
+
+  if kill -0 "$DAEMON_PID" 2>/dev/null; then
+    echo "$DAEMON_PID" >"$PID_FILE"
+    echo "LidHandler: Daemon started (PID $DAEMON_PID)"
+    echo "  Lid switch inhibited until stopped"
+    echo "  Stop with: lidhandler daemon stop"
+  else
+    echo "Error: Failed to start daemon" >&2
+    exit 1
+  fi
+}
+
+# Stop daemon
+daemon_stop() {
+  require_root
+  if ! pid=$(daemon_pid); then
+    echo "LidHandler: Daemon not running"
+    return 0
+  fi
+
+  kill "$pid" 2>/dev/null || true
+  wait "$pid" 2>/dev/null || true
+  rm -f "$PID_FILE"
+  echo "LidHandler: Daemon stopped"
+  echo "  Lid switch restored to default behavior"
+}
+
+# Show daemon status
+daemon_status() {
+  if pid=$(daemon_pid); then
+    echo "LidHandler: Daemon running (PID $pid)"
+    echo "  Lid switch: INHIBITED (no suspend on lid close)"
+  else
+    echo "LidHandler: Daemon not running"
+    echo "  Lid switch: DEFAULT (system config applies)"
+  fi
+}
+
+usage() {
+  echo "Usage: lidhandler [COMMAND]"
+  echo ""
+  echo "Commands:"
+  echo "  enable       Prevent suspend on lid close (persistent)"
+  echo "  disable      Restore default suspend on lid close"
+  echo "  status       Show current lid switch behavior"
+  echo "  toggle       Toggle between enable and disable"
+  echo ""
+  echo "Daemon mode (temporary, non-persistent):"
+  echo "  daemon       Start daemon in foreground (Ctrl-C to stop)"
+  echo "  daemon -d    Start daemon in background"
+  echo "  daemon stop  Stop background daemon"
+  echo "  daemon status Check if daemon is running"
+  exit 1
+}
+
+show_logo
+
+case "${1:-help}" in
+enable)
+  enable_ignore
+  ;;
+disable)
+  disable_ignore
+  ;;
+status)
+  show_status
+  ;;
+toggle)
+  toggle_ignore
+  ;;
+help | -h | --help)
+  usage
+  ;;
+daemon)
+  case "${2:-foreground}" in
+  -d | --background | background)
+    daemon_start
+    ;;
+  stop | kill)
+    daemon_stop
+    ;;
+  status)
+    daemon_status
+    ;;
+  foreground | -f)
+    echo "LidHandler: Daemon mode (Ctrl-C to stop)"
+    echo "  Lid switch inhibited"
+    exec systemd-inhibit \
+      --what=handle-lid-switch \
+      --who="LidHandler" \
+      --why="Daemon mode: lid switch inhibited" \
+      --mode=block \
+      sleep infinity
+    ;;
+  *)
+    echo "Error: Unknown daemon subcommand: ${2}" >&2
+    echo "Usage: lidhandler daemon [-d|stop|status]" >&2
+    exit 1
+    ;;
+  esac
+  ;;
+*)
+  usage
+  ;;
+esac

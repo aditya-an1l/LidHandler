@@ -1,0 +1,7 @@
+#!/bin/sh
+set -e
+# Remove drop-in config on package removal
+rm -f /etc/systemd/logind.conf.d/10-lidhandler.conf
+rmdir --ignore-fail-on-non-empty /etc/systemd/logind.conf.d 2>/dev/null || true
+systemctl kill -s HUP systemd-logind 2>/dev/null || true
+echo "LidHandler: Lid switch restored to default behavior"

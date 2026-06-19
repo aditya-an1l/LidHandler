@@ -1,0 +1,5 @@
+#!/bin/sh
+set -e
+# Clean up drop-in config on purge
+rm -f /etc/systemd/logind.conf.d/10-lidhandler.conf
+rmdir --ignore-fail-on-non-empty /etc/systemd/logind.conf.d 2>/dev/null || true
