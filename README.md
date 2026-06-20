@@ -3,6 +3,10 @@
 </div>
 
 > **⚠️ Under Active Maintenance** — This project is undergoing heavy restructuring. Install scripts and packages may be broken or incomplete. Do not use in production until this notice is removed.
+>
+> **🛑 AUR publishing suspended.** On 2026-06-12, Arch Linux staff disclosed an active malicious-packages incident affecting the Arch User Repository[^aur-incident]. New account registration and package submission are blocked until further notice. The lidhandler AUR package (`pkg/aur/`) is prepared and tested; it will be pushed once the AUR reopens.
+>
+> [^aur-incident]: https://archlinux.org/news/active-aur-malicious-packages-incident/
 
 <div align="center">
   <p>
