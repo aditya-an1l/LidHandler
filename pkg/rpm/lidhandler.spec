@@ -37,5 +37,4 @@ systemctl kill -s HUP systemd-logind 2>/dev/null || true
 %license %{_licensedir}/%{name}/LICENSE
 %{_bindir}/lidhandler
 %{_mandir}/man1/lidhandler.1
-%dir %{_sysconfdir}/systemd/logind.conf.d
 %config(noreplace) %{_sysconfdir}/systemd/logind.conf.d/10-lidhandler.conf
