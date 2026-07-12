@@ -22,27 +22,20 @@ base logind.conf. Supports enable, disable, status, and toggle commands.
 # No build needed for shell scripts
 
 %install
-install -Dm755 src/lidhandler %{buildroot}/usr/bin/lidhandler
-install -Dm644 config/lidhandler.conf %{buildroot}/etc/systemd/logind.conf.d/10-lidhandler.conf
-install -Dm644 docs/lidhandler.1 %{buildroot}/usr/share/man/man1/lidhandler.1
-install -Dm644 LICENSE %{buildroot}/%{_licensedir}/%{name}/LICENSE
+install -Dm755 src/lidhandler %{buildroot}%{_bindir}/lidhandler
+install -Dm644 config/lidhandler.conf %{buildroot}%{_sysconfdir}/systemd/logind.conf.d/10-lidhandler.conf
+install -Dm644 docs/lidhandler.1 %{buildroot}%{_mandir}/man1/lidhandler.1
+install -Dm644 LICENSE %{buildroot}%{_licensedir}/%{name}/LICENSE
 
 %post
-mkdir -p /etc/systemd/logind.conf.d
-cat > /etc/systemd/logind.conf.d/10-lidhandler.conf <<'EOF'
-[Login]
-HandleLidSwitch=ignore
-EOF
 systemctl kill -s HUP systemd-logind 2>/dev/null || true
-echo "LidHandler: Lid close will now be IGNORED (no suspend)"
 
 %preun
-rm -f /etc/systemd/logind.conf.d/10-lidhandler.conf
 systemctl kill -s HUP systemd-logind 2>/dev/null || true
-echo "LidHandler: Lid switch restored to default behavior"
 
 %files
 %license %{_licensedir}/%{name}/LICENSE
-/usr/bin/lidhandler
-/usr/share/man/man1/lidhandler.1
-%config(noreplace) /etc/systemd/logind.conf.d/10-lidhandler.conf
+%{_bindir}/lidhandler
+%{_mandir}/man1/lidhandler.1
+%dir %{_sysconfdir}/systemd/logind.conf.d
+%config(noreplace) %{_sysconfdir}/systemd/logind.conf.d/10-lidhandler.conf
