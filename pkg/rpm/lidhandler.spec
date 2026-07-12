@@ -5,7 +5,7 @@ Summary:        Toggle laptop lid switch suspend behavior via systemd-logind
 
 License:        MIT
 URL:            https://github.com/aditya-an1l/LidHandler
-Source0:        %{name}-%{version}.tar.gz
+Source0:        https://github.com/aditya-an1l/LidHandler/archive/v%{version}.tar.gz
 
 BuildArch:      noarch
 Requires:       systemd
@@ -16,7 +16,7 @@ configuration files. Prevent suspend-on-lid-close without modifying the
 base logind.conf. Supports enable, disable, status, and toggle commands.
 
 %prep
-%setup -q
+%setup -q -n LidHandler-%{version}
 
 %build
 # No build needed for shell scripts
