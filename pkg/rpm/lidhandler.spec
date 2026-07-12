@@ -25,6 +25,7 @@ base logind.conf. Supports enable, disable, status, and toggle commands.
 install -Dm755 src/lidhandler %{buildroot}/usr/bin/lidhandler
 install -Dm644 config/lidhandler.conf %{buildroot}/etc/systemd/logind.conf.d/10-lidhandler.conf
 install -Dm644 docs/lidhandler.1 %{buildroot}/usr/share/man/man1/lidhandler.1
+install -Dm644 LICENSE %{buildroot}/%{_licensedir}/%{name}/LICENSE
 
 %post
 mkdir -p /etc/systemd/logind.conf.d
@@ -41,7 +42,7 @@ systemctl kill -s HUP systemd-logind 2>/dev/null || true
 echo "LidHandler: Lid switch restored to default behavior"
 
 %files
-%license LICENSE
+%license %{_licensedir}/%{name}/LICENSE
 /usr/bin/lidhandler
 /usr/share/man/man1/lidhandler.1
 %config(noreplace) /etc/systemd/logind.conf.d/10-lidhandler.conf
