@@ -1,16 +1,15 @@
 # .copr/Makefile for LidHandler SRPM build
-# Working directory is repo root when this runs
-
-VERSION := 1.1.0
+# Invoked: make -f .copr/Makefile srpm spec=<path> outdir=<dir>
 
 srpm:
-	tar czf /tmp/lidhandler-$(VERSION).tar.gz \
-		--transform="s|^./|lidhandler-$(VERSION)/|" \
+	tar czf /tmp/lidhandler-1.1.0.tar.gz \
+		--transform="s|^\./|LidHandler-1.1.0/|" \
 		--exclude=.git \
 		--exclude=.copr \
 		.
 	rpmbuild -bs \
 		--define "_sourcedir /tmp" \
 		--define "_srcrpmdir $(outdir)" \
+		--define "_disable_source_fetch 1" \
 		--nodeps \
-		pkg/rpm/lidhandler.spec
+		$(spec)
