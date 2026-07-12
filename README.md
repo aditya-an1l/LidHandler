@@ -50,12 +50,16 @@ Prevents your laptop from suspending when you close the lid, using proper system
 ## Quick Start
 
 ```bash
-# Install (AUR - Arch Linux)
+# Fedora / RHEL / CentOS Stream (COPR — recommended)
+sudo dnf copr enable aditya-an1l/lidhandler
+sudo dnf install lidhandler
+
+# Arch Linux (AUR — currently suspended, see banner above)
 git clone https://aur.archlinux.org/lidhandler.git
 cd lidhandler
 makepkg -si
 
-# Or install from source
+# Or install from source (any distro)
 sudo make install
 ```
 
@@ -113,14 +117,27 @@ dpkg-deb --build pkg/deb lidhandler_1.0.0_all.deb
 sudo dpkg -i lidhandler_1.0.0_all.deb
 ```
 
-### RPM (Fedora/RHEL)
+### RPM (Fedora / RHEL / CentOS Stream)
+
+The recommended install is the published Fedora COPR repository — no local
+build tooling required:
 
 ```bash
-# Build the .rpm package
-rpmbuild -ba pkg/rpm/lidhandler.spec
+# Fedora
+sudo dnf copr enable aditya-an1l/lidhandler
+sudo dnf install lidhandler
 
-# Install
-sudo rpm -i rpmbuild/RPMS/noarch/lidhandler-1.0.0-1.*.rpm
+# CentOS Stream / RHEL 9 (needs EPEL for `dnf copr`)
+sudo dnf install epel-release
+sudo dnf copr enable aditya-an1l/lidhandler
+sudo dnf install lidhandler
+```
+
+Prefer to build the RPM yourself? The spec lives at `pkg/rpm/lidhandler.spec`:
+
+```bash
+rpmbuild -ba pkg/rpm/lidhandler.spec
+sudo rpm -i ~/rpmbuild/RPMS/noarch/lidhandler-1.1.0-1.*.rpm
 ```
 
 ## Requirements

@@ -1,4 +1,5 @@
 AGENT.md
+AGENTS.md
 CONTEXT.json
 TODO.md
 update.md
@@ -6,6 +7,7 @@ log.md
 docs/architecture/
 docs/constraints/
 docs/features/
+docs/skills/
 docs/Handbook.md
 # Build artifacts
 *.pkg.tar.zst
