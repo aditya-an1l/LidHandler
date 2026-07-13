@@ -1,0 +1,8 @@
+lidhandler (1.1.0) noble; urgency=low
+
+  * Initial PPA release.
+  * enable/disable/status/toggle commands.
+  * daemon mode with systemd-inhibit.
+  * Man page included.
+
+ -- Aditya An1l <aditya.anil.productions@gmail.com>  Sun, 13 Jul 2025 00:00:00 +0000

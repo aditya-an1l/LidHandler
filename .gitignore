@@ -9,6 +9,7 @@ docs/constraints/
 docs/features/
 docs/skills/
 docs/Handbook.md
+docs/launchpad.md
 # Build artifacts
 *.pkg.tar.zst
 *.deb
