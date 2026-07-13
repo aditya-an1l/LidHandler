@@ -1,0 +1,16 @@
+Source: lidhandler
+Section: utils
+Priority: optional
+Maintainer: Aditya An1l <aditya.anil.productions@gmail.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.2
+Homepage: https://github.com/aditya-an1l/lidhandler
+
+Package: lidhandler
+Architecture: all
+Depends: ${shlibs:Depends}, ${misc:Depends}, systemd
+Description: Toggle laptop lid switch suspend behavior via systemd-logind
+ LidHandler manages laptop lid switch behavior using systemd-logind drop-in
+ configuration files. Prevent suspend-on-lid-close without modifying the
+ base logind.conf. Supports enable, disable, status, toggle, and daemon
+ commands.
