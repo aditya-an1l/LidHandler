@@ -1,3 +1,9 @@
+lidhandler (1.3.0) noble; urgency=low
+
+  * Published to AUR.
+
+ -- Aditya An1l <aditya.anil.productions@gmail.com>  Tue, 14 Jul 2026 00:00:00 +0000
+
 lidhandler (1.1.0) noble; urgency=low
 
   * Initial PPA release.
