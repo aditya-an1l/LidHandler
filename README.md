@@ -2,10 +2,6 @@
   <img src="https://raw.githubusercontent.com/aditya-an1l/LidHandler/main/media/logo.jpeg" width="200" height="200" alt="LidHandler Logo">
 </div>
 
-> **🛑 AUR publishing suspended.** On 2026-06-12, Arch Linux staff disclosed an active malicious-packages incident affecting the Arch User Repository[^aur-incident]. New account registration and package submission are blocked until further notice. The lidhandler AUR package (`pkg/aur/`) is prepared and tested; it will be pushed once the AUR reopens.
->
-> [^aur-incident]: https://archlinux.org/news/active-aur-malicious-packages-incident/
-
 <div align="center">
   <p>
     <a href="https://github.com/aditya-an1l/LidHandler/releases/latest">
@@ -57,10 +53,9 @@ sudo add-apt-repository ppa:aditya-an1l/lidhandler
 sudo apt update
 sudo apt install lidhandler
 
-# Arch Linux (AUR — currently suspended, see banner above)
-git clone https://aur.archlinux.org/lidhandler.git
-cd lidhandler
-makepkg -si
+# Arch Linux (AUR)
+yay -S lidhandler
+# or: paru -S lidhandler
 
 # Or install from source (any distro)
 sudo make install
@@ -104,10 +99,12 @@ HandleLidSwitch=ignore
 ### AUR (Arch Linux)
 
 ```bash
-# From AUR
-git clone https://aur.archlinux.org/lidhandler.git
-cd lidhandler
-makepkg -si
+yay -S lidhandler
+# or: paru -S lidhandler
+# or clone and build:
+#   git clone https://aur.archlinux.org/lidhandler.git
+#   cd lidhandler
+#   makepkg -si
 ```
 
 ### Debian/Ubuntu (.deb)
@@ -139,7 +136,7 @@ Prefer to build the RPM yourself? The spec lives at `pkg/rpm/lidhandler.spec`:
 
 ```bash
 rpmbuild -ba pkg/rpm/lidhandler.spec
-sudo rpm -i ~/rpmbuild/RPMS/noarch/lidhandler-1.1.0-1.*.rpm
+sudo rpm -i ~/rpmbuild/RPMS/noarch/lidhandler-1.3.0-1.*.rpm
 ```
 
 ## Requirements
