@@ -1,3 +1,16 @@
+lidhandler (1.3.1) noble; urgency=low
+
+  * Fix critical lid-switch ignore bug: set HandleLidSwitchExternalPower and
+    HandleLidSwitchDocked in addition to HandleLidSwitch. Without these,
+    lid-ignore fails on AC power and docked/multi-monitor setups.
+  * Replace non-POSIX 'local' keyword in daemon_pid() with POSIX-compliant
+    variable for pure sh compatibility.
+  * Refactor DEBIAN/postinst to call lidhandler enable instead of duplicating
+    drop-in content.
+  * Closes #21.
+
+ -- Aditya An1l <aditya.anil.productions@gmail.com>  Tue, 21 Jul 2026 00:00:00 +0000
+
 lidhandler (1.3.0) noble; urgency=low
 
   * Published to AUR.
