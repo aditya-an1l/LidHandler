@@ -1,4 +1,4 @@
-.TH LIDHANDLER 1 "2026-07-14" "LidHandler 1.3.0" "User Commands"
+.TH LIDHANDLER 1 "2026-07-21" "LidHandler 1.3.1" "User Commands"
 .SH NAME
 lidhandler \- toggle laptop lid switch suspend behavior
 .SH SYNOPSIS
@@ -14,7 +14,9 @@ base logind.conf.
 .B enable
 Prevent suspend on lid close. Creates a drop-in file at
 .I /etc/systemd/logind.conf.d/10-lidhandler.conf
-with HandleLidSwitch=ignore.
+with HandleLidSwitch=ignore, HandleLidSwitchExternalPower=ignore, and
+HandleLidSwitchDocked=ignore. This ensures lid-ignore works regardless
+of AC power, docked, or multi-monitor state.
 .TP
 .B disable
 Restore default suspend on lid close. Removes the drop-in file.
